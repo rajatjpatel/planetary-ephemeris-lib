@@ -286,12 +286,14 @@ if barstate.islast and anchorFound
             if delta_spread <= clusterThresh
                 array.push(spreads, delta_spread)
     
-    // Find max spread (compression)
+    // Find max spread (compression) — FIXED BOUNDS CHECK
     float max_spread = 0.0
-    if array.size(spreads) > 0
-        for i = 0 to array.size(spreads) - 1
-            if array.get(spreads, i) > max_spread
-                max_spread := array.get(spreads, i)
+    int spreads_size = array.size(spreads)
+    if spreads_size > 0
+        for i = 0 to spreads_size - 1
+            float current_spread = array.get(spreads, i)
+            if current_spread > max_spread
+                max_spread := current_spread
     
     // Initialize time variables
     float time_days = 0.0
