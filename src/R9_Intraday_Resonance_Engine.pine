@@ -293,31 +293,35 @@ if barstate.islast and anchorFound
             if array.get(spreads, i) > max_spread
                 max_spread := array.get(spreads, i)
     
+    // Initialize time variables
+    float time_days = 0.0
+    float time_hours = 0.0
+    
     // ==========================================
     // 17. TIME PROJECTION ENGINE
     // ==========================================
-    if max_spread > 0.0 and showProjection
-        float time_days = max_spread / mdlv
-        float time_hours = time_days * 24.0
-        float time_minutes = time_days * 24.0 * 60.0
+    if max_spread > 0.0
+        time_days := max_spread / mdlv
+        time_hours := time_days * 24.0
         
-        int projection_time_ms = anchorTime + int(time_days * 86400000.0)
-        
-        // Draw timing projection line
-        line proj_line = line.new(projection_time_ms, anchorPrice, projection_time_ms, anchorPrice + 10, 
-                                   xloc.bar_time, extend.both, colorProj, getStyle(lineStyle), lineWidth)
-        array.push(linePool, proj_line)
-        
-        // Label with exact projection time
-        string time_str = timeFormat == "12-Hour" ?
-             str.format_time(projection_time_ms, "hh:mm a", syminfo.timezone) :
-             str.format_time(projection_time_ms, "HH:mm", syminfo.timezone)
-        string proj_label = str.tostring(time_hours, "0.0##") + "h @ " + time_str
-        
-        label lbl_proj = label.new(projection_time_ms, anchorPrice + 15, proj_label, 
-                                    xloc.bar_time, yloc.abovebar, colorProj, label.style_label_down, 
-                                    color.gray, labelSize)
-        array.push(labelPool, lbl_proj)
+        if showProjection
+            int projection_time_ms = anchorTime + int(time_days * 86400000.0)
+            
+            // Draw timing projection line
+            line proj_line = line.new(projection_time_ms, anchorPrice, projection_time_ms, anchorPrice + 10, 
+                                       xloc.bar_time, extend.both, colorProj, getStyle(lineStyle), lineWidth)
+            array.push(linePool, proj_line)
+            
+            // Label with exact projection time
+            string time_str = timeFormat == "12-Hour" ?
+                 str.format_time(projection_time_ms, "hh:mm a", syminfo.timezone) :
+                 str.format_time(projection_time_ms, "HH:mm", syminfo.timezone)
+            string proj_label = str.tostring(time_hours, "0.0##") + "h @ " + time_str
+            
+            label lbl_proj = label.new(projection_time_ms, anchorPrice + 15, proj_label, 
+                                        xloc.bar_time, yloc.abovebar, colorProj, label.style_label_down, 
+                                        color.gray, labelSize)
+            array.push(labelPool, lbl_proj)
     
     // ==========================================
     // 18. DRAW ANCHOR REFERENCE LINE
