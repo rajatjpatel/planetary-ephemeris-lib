@@ -304,14 +304,14 @@ if barstate.islast and anchorFound
         
         // Label with exact projection time
         string time_str = timeFormat == "12-Hour" ?
-             str.format_time(projection_time_ms, "HH:mm a", syminfo.timezone) :
+             str.format_time(projection_time_ms, "hh:mm a", syminfo.timezone) :
              str.format_time(projection_time_ms, "HH:mm", syminfo.timezone)
         string proj_label = str.tostring(time_hours, "0.0##") + "h @ " + time_str
         
         label lbl_proj = label.new(projection_time_ms, anchorPrice + 15, proj_label, 
                                     xloc.bar_time, yloc.abovebar, colorProj, label.style_label_down, 
                                     color.gray, labelSize)
-        array.push(linePool, lbl_proj.tostring() == "" ? na : lbl_proj)
+        array.push(linePool, lbl_proj)
     
     // ==========================================
     // 18. DRAW ANCHOR REFERENCE LINE
@@ -327,11 +327,13 @@ if barstate.islast and anchorFound
          str.format_time(anchorTime, "MMM dd, hh:mm a", syminfo.timezone) :
          str.format_time(anchorTime, "MMM dd, HH:mm", syminfo.timezone)
     
+    float display_hours = max_spread > 0.0 ? time_hours : 0.0
+    
     string summary = "INTRADAY RESONANCE WINDOW\n" +
                      "Anchor: " + anchor_str + "\n" +
                      "Price: " + str.tostring(anchorPrice, format.mintick) + "\n" +
                      "Compression: " + str.tostring(max_spread, "0.##") + "°\n" +
-                     "Projection: " + str.tostring(time_hours if max_spread > 0.0 else 0.0, "0.0##") + " hours"
+                     "Projection: " + str.tostring(display_hours, "0.0##") + " hours"
     
     label lbl_summary = label.new(anchorTime, anchorPrice, summary,
                                    xloc.bar_time, yloc.belowbar, color.new(color.gray, 80),
